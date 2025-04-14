@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Editor</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --container-bg: white;
+            --control-group-bg: #f8f9fa;
+            --button-bg: #007bff;
+            --button-hover: #0056b3;
+            --upload-bg: #28a745;
+            --upload-hover: #218838;
+            --timeline-bg: #333;
+            --timeline-track: #666;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --container-bg: #2d2d2d;
+            --control-group-bg: #3d3d3d;
+            --button-bg: #0d6efd;
+            --button-hover: #0b5ed7;
+            --upload-bg: #198754;
+            --upload-hover: #157347;
+            --timeline-bg: #1a1a1a;
+            --timeline-track: #4d4d4d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            background-color: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .video-preview {
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-preview video {
+            width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            background-color: var(--control-group-bg);
+            padding: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .control-group h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload {
+            background-color: var(--upload-bg);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .file-upload:hover {
+            background-color: var(--upload-hover);
+        }
+
+        .timeline {
+            margin-top: 20px;
+            background-color: var(--timeline-bg);
+            height: 100px;
+            border-radius: 8px;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .timeline-track {
+            background-color: var(--timeline-track);
+            height: 40px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--button-hover);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+    <div class="container">
+        <h1>Video Editor</h1>
+        <div class="editor-container">
+            <div class="video-preview">
+                <video id="videoPlayer" controls></video>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <h3>Import Video</h3>
+                    <label class="file-upload">
+                        Choose Video
+                        <input type="file" id="videoInput" accept="video/*">
+                    </label>
+                </div>
+                <div class="control-group">
+                    <h3>Basic Controls</h3>
+                    <button id="playPauseBtn">Play/Pause</button>
+                    <button id="cutBtn">Cut</button>
+                    <button id="exportBtn">Export</button>
+                </div>
+                <div class="control-group">
+                    <h3>Effects</h3>
+                    <button id="brightnessBtn">Adjust Brightness</button>
+                    <button id="contrastBtn">Adjust Contrast</button>
+                </div>
+            </div>
+        </div>
+        <div class="timeline">
+            <div class="timeline-track" id="timelineTrack"></div>
+        </div>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoInput = document.getElementById('videoInput');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const cutBtn = document.getElementById('cutBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const timelineTrack = document.getElementById('timelineTrack');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', function() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+            
+            // Save theme preference
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        // Handle video file selection
+        videoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                videoPlayer.src = videoURL;
+            }
+        });
+
+        // Play/Pause button functionality
+        playPauseBtn.addEventListener('click', function() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+            } else {
+                videoPlayer.pause();
+            }
+        });
+
+        // Cut button functionality
+        cutBtn.addEventListener('click', function() {
+            // TODO: Implement cut functionality
+            alert('Cut functionality will be implemented');
+        });
+
+        // Export button functionality
+        exportBtn.addEventListener('click', function() {
+            // TODO: Implement export functionality
+            alert('Export functionality will be implemented');
+        });
+
+        // Update timeline as video plays
+        videoPlayer.addEventListener('timeupdate', function() {
+            const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+            timelineTrack.style.width = progress + '%';
+        });
+    </script>
+</body>
+</html> 
