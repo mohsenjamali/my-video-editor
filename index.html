@@ -6,29 +6,31 @@
     <title>Video Editor</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --text-color: #333;
-            --container-bg: white;
-            --control-group-bg: #f8f9fa;
-            --button-bg: #007bff;
-            --button-hover: #0056b3;
-            --upload-bg: #28a745;
-            --upload-hover: #218838;
-            --timeline-bg: #333;
-            --timeline-track: #666;
+            --bg-color: #f3f2ef;
+            --text-color: #000000e6;
+            --container-bg: #ffffff;
+            --control-group-bg: #f3f2ef;
+            --button-bg: #0a66c2;
+            --button-hover: #004182;
+            --upload-bg: #0a66c2;
+            --upload-hover: #004182;
+            --timeline-bg: #e6e6e6;
+            --timeline-track: #0a66c2;
+            --border-color: #d0d0d0;
         }
 
         [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --container-bg: #2d2d2d;
-            --control-group-bg: #3d3d3d;
-            --button-bg: #0d6efd;
-            --button-hover: #0b5ed7;
-            --upload-bg: #198754;
-            --upload-hover: #157347;
-            --timeline-bg: #1a1a1a;
-            --timeline-track: #4d4d4d;
+            --bg-color: #1d2226;
+            --text-color: #ffffff;
+            --container-bg: #192734;
+            --control-group-bg: #192734;
+            --button-bg: #0a66c2;
+            --button-hover: #004182;
+            --upload-bg: #0a66c2;
+            --upload-hover: #004182;
+            --timeline-bg: #38434f;
+            --timeline-track: #0a66c2;
+            --border-color: #38434f;
         }
 
         * {
@@ -38,7 +40,7 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
@@ -59,12 +61,14 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
             transition: background-color 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .video-preview {
             background-color: #000;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         .video-preview video {
@@ -83,11 +87,13 @@
             padding: 15px;
             border-radius: 8px;
             transition: background-color 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .control-group h3 {
             margin-bottom: 10px;
             font-size: 16px;
+            color: var(--text-color);
         }
 
         button {
@@ -95,9 +101,11 @@
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 24px;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         button:hover {
@@ -112,10 +120,13 @@
             background-color: var(--upload-bg);
             color: white;
             padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 24px;
             cursor: pointer;
             text-align: center;
             transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
         }
 
         .file-upload:hover {
@@ -129,6 +140,7 @@
             border-radius: 8px;
             padding: 10px;
             transition: background-color 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .timeline-track {
@@ -147,13 +159,22 @@
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 24px;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .theme-toggle:hover {
             background-color: var(--button-hover);
+        }
+
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
         }
     </style>
 </head>
